@@ -56,14 +56,18 @@ class _MyNetworkImageImplState extends State<MyNetworkImageImpl> {
         ..style.height = widget.height != null ? '${widget.height!.floor()}px' : '100%'
         ..style.objectFit = objectFit,
     );
-    return SizedBox(
-      width: widget.width ?? width,
-      height: widget.height ?? height,
-      child: AnimatedCrossFade(
-        duration: const Duration(microseconds: 1),
-        crossFadeState: isLoading ? CrossFadeState.showFirst : CrossFadeState.showSecond,
-        firstChild: widget.loading ?? const SizedBox(),
-        secondChild: HtmlElementView(
+    return AnimatedCrossFade(
+      duration: const Duration(microseconds: 1),
+      crossFadeState: isLoading ? CrossFadeState.showFirst : CrossFadeState.showSecond,
+      firstChild: widget.loading ??
+          SizedBox(
+            width: widget.width ?? width,
+            height: widget.height ?? height,
+          ),
+      secondChild: SizedBox(
+        width: widget.width ?? width,
+        height: widget.height ?? height,
+        child: HtmlElementView(
           viewType: widget.src,
           onPlatformViewCreated: (value) {
             if (value >= 0) {
