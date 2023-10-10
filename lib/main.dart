@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:image_viewer/my_custom_slider.dart';
 import 'package:shimmer_animation/shimmer_animation.dart';
 
 import 'my_network_image.dart';
@@ -20,14 +21,9 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class MyHomePage extends StatefulWidget {
+class MyHomePage extends StatelessWidget {
   const MyHomePage({super.key});
 
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     final loading = Shimmer(
@@ -54,6 +50,16 @@ class _MyHomePageState extends State<MyHomePage> {
         child: SingleChildScrollView(
           child: Column(
             children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 50.0),
+                child: MyCustomSlider(
+                  'https://assets.flutterhub.dev/weed_thumb.svg',
+                  lineColor: Colors.blue.shade50,
+                  pointColor: Colors.blue,
+                  onChange: (value) => print(value),
+                ),
+              ),
+              const Divider(height: 5),
               MyNetworkImage('https://assets.flutterhub.dev/dash.png', loading: loading, error: error),
               const Divider(height: 5),
               MyNetworkImage('https://assets.flutterhub.dev/dash.jpg', loading: loading, error: error),
