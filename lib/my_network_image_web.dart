@@ -32,6 +32,7 @@ class MyNetworkImageImpl extends StatefulWidget implements MyNetworkImageInterfa
 
 class _MyNetworkImageImplState extends State<MyNetworkImageImpl> {
   bool isLoading = true;
+  bool hasError = false;
 
   @override
   Widget build(BuildContext context) {
@@ -46,16 +47,19 @@ class _MyNetworkImageImplState extends State<MyNetworkImageImpl> {
         }[widget.fit] ??
         'contain';
 
+    final image = ImageElement();
+    image.src = widget.src;
+    image.style.width = widget.width != null ? '${widget.width!.floor()}px' : '100%';
+    image.style.height = widget.height != null ? '${widget.height!.floor()}px' : '100%';
+    image.style.objectFit = objectFit;
+
     // https://github.com/flutter/flutter/issues/41563
     // ignore: undefined_prefixed_name
     ui.platformViewRegistry.registerViewFactory(
       widget.src,
-      (int _) => ImageElement()
-        ..src = widget.src
-        ..style.width = widget.width != null ? '${widget.width!.floor()}px' : '100%'
-        ..style.height = widget.height != null ? '${widget.height!.floor()}px' : '100%'
-        ..style.objectFit = objectFit,
+      (int _) => image,
     );
+
     return AnimatedCrossFade(
       duration: const Duration(microseconds: 1),
       crossFadeState: isLoading ? CrossFadeState.showFirst : CrossFadeState.showSecond,
@@ -64,20 +68,44 @@ class _MyNetworkImageImplState extends State<MyNetworkImageImpl> {
             width: widget.width ?? width,
             height: widget.height ?? height,
           ),
-      secondChild: SizedBox(
-        width: widget.width ?? width,
-        height: widget.height ?? height,
-        child: HtmlElementView(
-          viewType: widget.src,
-          onPlatformViewCreated: (value) {
-            if (value >= 0) {
-              setState(() {
-                isLoading = false;
-              });
-            }
-          },
-        ),
-      ),
+      secondChild: !hasError
+          ? SizedBox(
+              width: widget.width ?? width,
+              height: widget.height ?? height,
+              child: HtmlElementView(
+                viewType: widget.src,
+                onPlatformViewCreated: (value) {
+                  if (value >= 0) {
+                    isLoaded(image);
+                  }
+                },
+              ),
+            )
+          : widget.error ??
+              SizedBox(
+                width: widget.width ?? width,
+                height: widget.height ?? height,
+              ),
     );
+  }
+
+  isLoaded(ImageElement image) async {
+    final imageLoaded = image.complete ?? false;
+    final imageShown = image.naturalHeight != 0;
+    if (imageLoaded && imageShown) {
+      setState(() {
+        isLoading = false;
+      });
+    } else {
+      if (!imageLoaded) {
+        await Future.delayed(const Duration(seconds: 1));
+        await isLoaded(image);
+      } else {
+        setState(() {
+          isLoading = false;
+          hasError = true;
+        });
+      }
+    }
   }
 }
