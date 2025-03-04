@@ -20,8 +20,8 @@ This project uses **conditional imports** to provide platform-specific implement
 - **Web:** Uses [`image_picker_for_web`](https://pub.dev/packages/image_picker_for_web) **v3.0.6**.
 
 ### **2️⃣ Image Viewer (Local & Network)**
-- **Web:** Uses `Image.network()` for **network images**.
-- **Mobile:** Uses `Image.file()` for **local files**.
+- **Web:** Uses `HTMLElement` for **local images** and **network images**.
+- **Mobile:** Uses `Image.file` for **local images** and `Image.network, SvgPicture.network` for **network images**.
 
 ---
 
