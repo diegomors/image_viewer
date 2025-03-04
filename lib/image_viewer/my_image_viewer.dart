@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import 'my_network_image_stub.dart' if (dart.library.io) 'my_network_image_mobile.dart' if (dart.library.html) 'my_network_image_web.dart';
+import 'my_image_viewer_stub.dart' if (dart.library.io) 'my_image_viewer_mobile.dart' if (dart.library.html) 'my_image_viewer_web.dart';
 
-class MyNetworkImage extends StatelessWidget {
+class MyImageViewer extends StatelessWidget {
   final String src;
   final double? width;
   final double? height;
@@ -10,7 +10,7 @@ class MyNetworkImage extends StatelessWidget {
   final Widget? loading;
   final Widget? error;
 
-  const MyNetworkImage(
+  const MyImageViewer(
     this.src, {
     super.key,
     this.width,
@@ -22,7 +22,7 @@ class MyNetworkImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MyNetworkImageImpl(
+    return MyImageViewerImpl(
       src,
       key: key,
       width: width,

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-abstract class MyNetworkImageInterface {
-  const MyNetworkImageInterface(
+abstract class MyImageViewerInterface {
+  const MyImageViewerInterface(
     String src, {
     double? width,
     double? height,

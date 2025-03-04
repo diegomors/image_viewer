@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import 'my_network_image_interface.dart';
+import 'my_image_viewer_interface.dart';
 
-class MyNetworkImageImpl extends StatelessWidget implements MyNetworkImageInterface {
+class MyImageViewerImpl extends StatelessWidget implements MyImageViewerInterface {
   final String src;
   final double? width;
   final double? height;
@@ -10,7 +10,7 @@ class MyNetworkImageImpl extends StatelessWidget implements MyNetworkImageInterf
   final Widget? loading;
   final Widget? error;
 
-  const MyNetworkImageImpl(
+  const MyImageViewerImpl(
     this.src, {
     super.key,
     this.width,

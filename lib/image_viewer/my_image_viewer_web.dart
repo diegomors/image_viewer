@@ -6,7 +6,7 @@ import 'dart:ui_web' as ui_web;
 import 'package:flutter/material.dart';
 import 'package:web/web.dart';
 
-import 'my_network_image_interface.dart';
+import 'my_image_viewer_interface.dart';
 
 @JS('Image')
 @staticInterop
@@ -20,7 +20,7 @@ extension JSImageElementExtension on JSImageElement {
   external bool get complete;
 }
 
-class MyNetworkImageImpl extends StatefulWidget implements MyNetworkImageInterface {
+class MyImageViewerImpl extends StatefulWidget implements MyImageViewerInterface {
   final String src;
   final double? width;
   final double? height;
@@ -28,15 +28,15 @@ class MyNetworkImageImpl extends StatefulWidget implements MyNetworkImageInterfa
   final Widget? loading;
   final Widget? error;
 
-  MyNetworkImageImpl(this.src, {super.key, this.width, this.height, this.fit, this.loading, this.error})
+  MyImageViewerImpl(this.src, {super.key, this.width, this.height, this.fit, this.loading, this.error})
       : assert(
             fit == null || [BoxFit.fill, BoxFit.contain, BoxFit.cover, BoxFit.none, BoxFit.scaleDown].contains(fit), 'BoxFit value is not accepted');
 
   @override
-  State<MyNetworkImageImpl> createState() => _MyNetworkImageImplState();
+  State<MyImageViewerImpl> createState() => _MyImageViewerImplState();
 }
 
-class _MyNetworkImageImplState extends State<MyNetworkImageImpl> {
+class _MyImageViewerImplState extends State<MyImageViewerImpl> {
   bool isLoading = true;
   bool hasError = false;
 
@@ -74,7 +74,10 @@ class _MyNetworkImageImplState extends State<MyNetworkImageImpl> {
     return AnimatedCrossFade(
       duration: const Duration(microseconds: 1),
       crossFadeState: isLoading ? CrossFadeState.showFirst : CrossFadeState.showSecond,
-      firstChild: widget.loading ?? const CircularProgressIndicator(),
+      firstChild: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: widget.loading ?? const CircularProgressIndicator(),
+      ),
       secondChild: !hasError
           ? SizedBox(
               width: widget.width ?? width,
