@@ -117,7 +117,7 @@ class _MyCustomSliderState extends State<MyCustomSlider> {
                       hoverColor: Colors.transparent,
                       highlightColor: Colors.transparent,
                       splashColor: Colors.transparent,
-                      overlayColor: MaterialStateProperty.all(Colors.transparent),
+                      overlayColor: WidgetStateProperty.all(Colors.transparent),
                       onTap: () => setState(() {
                         selected = index;
                         widget.onChange(selected!);

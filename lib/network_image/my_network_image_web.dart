@@ -1,11 +1,24 @@
 // ignore_for_file: avoid_web_libraries_in_flutter
 
-import 'dart:html';
+import 'dart:js_interop';
 import 'dart:ui_web' as ui_web;
 
 import 'package:flutter/material.dart';
+import 'package:web/web.dart';
 
 import 'my_network_image_interface.dart';
+
+@JS('Image')
+@staticInterop
+class JSImageElement {
+  external factory JSImageElement();
+}
+
+extension JSImageElementExtension on JSImageElement {
+  external set src(String value);
+  external int get naturalHeight;
+  external bool get complete;
+}
 
 class MyNetworkImageImpl extends StatefulWidget implements MyNetworkImageInterface {
   final String src;
@@ -40,15 +53,23 @@ class _MyNetworkImageImplState extends State<MyNetworkImageImpl> {
         }[widget.fit] ??
         'contain';
 
-    final image = ImageElement();
+    // Create JS ImageElement
+    final image = JSImageElement();
     image.src = widget.src;
-    image.style.width = widget.width != null ? '${widget.width!.floor()}px' : '100%';
-    image.style.height = widget.height != null ? '${widget.height!.floor()}px' : '100%';
-    image.style.objectFit = objectFit;
 
     final imageId = '${widget.key}-${widget.src}';
 
-    ui_web.platformViewRegistry.registerViewFactory(imageId, (int _) => image);
+    // Register the view factory for the image
+    ui_web.platformViewRegistry.registerViewFactory(imageId, (int _) {
+      final img = document.createElement('img') as HTMLElement;
+      img.setAttribute('src', widget.src);
+      img.style
+        ..width = widget.width != null ? '${widget.width!.floor()}px' : '100%'
+        ..height = widget.height != null ? '${widget.height!.floor()}px' : '100%'
+        ..objectFit = objectFit;
+
+      return img;
+    });
 
     return AnimatedCrossFade(
       duration: const Duration(microseconds: 1),
@@ -76,8 +97,8 @@ class _MyNetworkImageImplState extends State<MyNetworkImageImpl> {
     );
   }
 
-  isLoaded(ImageElement image) async {
-    final imageLoaded = image.complete ?? false;
+  isLoaded(JSImageElement image) async {
+    final imageLoaded = image.complete;
     final imageShown = image.naturalHeight != 0;
     if (imageLoaded && imageShown) {
       if (mounted) {
